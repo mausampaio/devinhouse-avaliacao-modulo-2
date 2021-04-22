@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.devinhouse.projeto04.entity.Processo;
 import br.com.devinhouse.projeto04.repository.ProcessoRepository;
+import br.com.devinhouse.projeto04.util.AtualizaColunasUtil;
 
 @Service
 public class ProcessoService {
@@ -52,25 +54,7 @@ public class ProcessoService {
 		
 		Processo processo = result.orElseThrow();
 		
-		Integer CdAssunto = body.getCdAssunto() == null ? processo.getCdAssunto() : body.getCdAssunto();
-		Integer CdInteressado = body.getCdInteressado() == null ? processo.getCdInteressado() : body.getCdInteressado();
-		Integer NuProcesso = body.getNuProcesso() == null ? processo.getNuProcesso() : body.getNuProcesso();
-		String ChaveProcesso = body.getChaveProcesso() == null ? processo.getChaveProcesso() : body.getChaveProcesso();
-		String Descricao = body.getDescricao() == null ? processo.getDescricao() : body.getDescricao();
-		String DescricaoAssunto = body.getDescricaoAssunto() == null ? processo.getDescricaoAssunto() : body.getDescricaoAssunto();
-		String NmInteressado = body.getNmInteressado() == null ? processo.getNmInteressado() : body.getNmInteressado();
-		String NuAnoProcesso = body.getNuAnoProcesso() == null ? processo.getNuAnoProcesso() : body.getNuAnoProcesso();
-		String SgOrgaoProcesso = body.getSgOrgaoProcesso() == null ? processo.getSgOrgaoProcesso() : body.getSgOrgaoProcesso();
-		
-		processo.setCdAssunto(CdAssunto);
-		processo.setCdInteressado(CdInteressado);
-		processo.setChaveProcesso(ChaveProcesso);
-		processo.setDescricao(Descricao);
-		processo.setDescricaoAssunto(DescricaoAssunto);
-		processo.setNmInteressado(NmInteressado);
-		processo.setNuAnoProcesso(NuAnoProcesso);
-		processo.setNuProcesso(NuProcesso);
-		processo.setSgOrgaoProcesso(SgOrgaoProcesso);
+		BeanUtils.copyProperties(body, processo, AtualizaColunasUtil.getNullPropertyNames(body));
 		
 		repository.save(processo);
 	}
